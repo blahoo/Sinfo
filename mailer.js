@@ -30,10 +30,10 @@ emailInput.addEventListener('input', () => {
 
 submitButton.addEventListener('submit', function(event) {
     event.preventDefault();
-    let email_value = emailInput.value;
-    let name_value = nameInput.value 
-    console.log(email_value)
-    console.log(name_value)
+    let emailValue = emailInput.value;
+    let nameValue = nameInput.value 
+    console.log(emailValue)
+    console.log(nameValue)
     const nodemailer = require('nodemailer');
 
     // Create a transporter object using Gmail's SMTP server
@@ -52,9 +52,9 @@ submitButton.addEventListener('submit', function(event) {
     // Email content
     const mailOptions = {
         from: '1gugre@gmail.com',
-        to: email_value,
+        to: emailValue,
         subject: 'Automated Email',
-        text: 'Hello, ' + name_value + '\n  Your email has been captured and collected'
+        text: 'Hello, ' + nameValue + '\n  Your email has been captured and collected'
     };
 
     // Send the email

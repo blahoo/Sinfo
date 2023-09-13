@@ -51,13 +51,21 @@ const lineRange = 150;
 
 createDot(numDots)
 
-function createDot(numDots){
+function createDot(numDots, setX=0, setY=0){
   for (let i = 0; i < numDots; i++) {
-    const x = Math.random() * (boundry.width - radius * 2) + radius;
-    const y = Math.random() * (boundry.height - radius * 2) + radius;
+  
+    // random position
+    let x;
+    let y;
 
+    x != 0 ? setX : Math.random() * (boundry.width - radius * 2) + radius;
+    y != 0 ? setY : Math.random() * (boundry.height - radius * 2) + radius;
+
+    // random movement direction
     const movex = (Math.random() - 0.5) * speed;
     const movey = (Math.random() - 0.5) * speed;
+
+    console.log("New dot at: " + x + y);
 
     dots.push(new Dot(x, y, radius, movex, movey));
   }
@@ -79,19 +87,22 @@ function animate(){
   canvas.strokeStyle = lineColor;
   canvas.lineWidth = lineWidth;
 
-  //first iterate through each pair of dots
+  // first iterate through each pair of dots
   for (let i = 0; i < numDots; i++){
     for (let j = i + 1; j < numDots; j++){
 
-      //pythagorean theorem
+      // pythagorean theorem to clac distance between dots
       const distance = Math.sqrt(
         (dots[i].x - dots[j].x) ** 2 + (dots[i].y - dots[j].y) ** 2
       );
 
+      // draw line between each dot within a set distance
       if (distance < lineRange){
         canvas.beginPath();
+
         canvas.moveTo(dots[i].x, dots[i].y);
         canvas.lineTo(dots[j].x, dots[j].y);
+
         canvas.stroke();
       }
     }
@@ -106,5 +117,6 @@ boundry.addEventListener('click', (event) => {
   const clickX = event.clientX - rect.left;
   const clickY = event.clientY - rect.top;
   alert('Cursor position:', clickX, clickY);
-  createDot(1);
+
+  createDot(1, clickX, clickY);
 });
