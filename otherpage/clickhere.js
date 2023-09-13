@@ -30,6 +30,8 @@ class Dot {
     if(this.y + this.radius > boundry.height || this.y - this.radius < 0) {
       this.dy = -this.dy;
     }
+
+    //invert direction on contact
     this.x += this.dx;
     this.y += this.dy;
     this.draw();
@@ -39,7 +41,7 @@ class Dot {
 
 //dot modifiers
 const dots = [];
-const numDots = 50;
+const numDots = 1;
 const radius = 5;
 const speed = 2;
 const dotColor = 'rgba(0, 255, 100, 1)';
@@ -55,17 +57,20 @@ function createDot(numDots, setX=0, setY=0){
   for (let i = 0; i < numDots; i++) {
   
     // random position
-    let x;
-    let y;
+    let x = setX - radius;
+    let y = setY - radius;
 
-    x != 0 ? setX : Math.random() * (boundry.width - radius * 2) + radius;
-    y != 0 ? setY : Math.random() * (boundry.height - radius * 2) + radius;
+    if(setX == 0)
+      x = Math.random() * (boundry.width - radius * 2) + radius;
 
+    if(setY == 0)
+      y = 0 ? setY : Math.random() * (boundry.height - radius * 2) + radius;
+    
     // random movement direction
     const movex = (Math.random() - 0.5) * speed;
     const movey = (Math.random() - 0.5) * speed;
 
-    console.log("New dot at: " + x + y);
+    console.log("New dot at: " + x + ", " + y);
 
     dots.push(new Dot(x, y, radius, movex, movey));
   }
@@ -79,7 +84,7 @@ function animate(){
 
   canvas.clearRect(0, 0, boundry.width, boundry.height);
 
-  for (let i = 0; i < numDots; i++) {
+  for (let i = 0; i < dots.length; i++) {
     dots[i].update();
   }
 
@@ -88,8 +93,8 @@ function animate(){
   canvas.lineWidth = lineWidth;
 
   // first iterate through each pair of dots
-  for (let i = 0; i < numDots; i++){
-    for (let j = i + 1; j < numDots; j++){
+  for (let i = 0; i < dots.length; i++){
+    for (let j = i + 1; j < dots.length; j++){
 
       // pythagorean theorem to clac distance between dots
       const distance = Math.sqrt(
@@ -112,11 +117,21 @@ function animate(){
 animate();
 
 
-boundry.addEventListener('click', (event) => {
-  const rect = boundry.getBoundingClientRect();
-  const clickX = event.clientX - rect.left;
-  const clickY = event.clientY - rect.top;
-  alert('Cursor position:', clickX, clickY);
+function getMousePos(canvas, evt) {
+  var rect = canvas.getBoundingClientRect();
+  return {
+      x: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
+      y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
+  };
+}
 
-  createDot(1, clickX, clickY);
-});
+boundry.addEventListener("click", function (evt) {
+
+  var mousePos = getMousePos(boundry, evt);
+  
+  console.log(mousePos.x + ',' + mousePos.y);
+
+  createDot(1, mousePos.x,  mousePos.y)
+
+}, false);
+
